@@ -4,9 +4,9 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt, QSaveFile, QIODevice, QStandardPaths, QTimer
 from PySide6.QtGui import QFont, QIcon, QPixmap
-from PySide6.QtWidgets import (QApplication, QComboBox, QFileDialog, QFormLayout, QFrame, QHBoxLayout,
+from PySide6.QtWidgets import (QApplication, QComboBox, QDialog, QFileDialog, QFormLayout, QHBoxLayout,
                                QLabel, QMainWindow, QMessageBox, QPlainTextEdit, QPushButton, QSplitter,
-                               QSizePolicy, QTabWidget, QVBoxLayout, QWidget)
+                               QSizePolicy, QVBoxLayout, QWidget)
 
 from mdword.formatting import DEFAULT, InputError, validate
 from mdword.language import display_name, localized_dictionary, localized_sample, parse_message, tr
@@ -16,6 +16,8 @@ from mdword.preset_dialog import PresetDialog
 from mdword.word import export
 
 ASSETS = Path(__file__).resolve().parent / "assets"
+VERSION = (ASSETS / "VERSION").read_text(encoding="ascii").strip()
+CONTACT = "mak1nly@yandex.ru"
 
 
 def atomic_write(path, data):
@@ -53,11 +55,16 @@ class Window(QMainWindow):
         title.setObjectName("brand")
         brand.addWidget(title)
         brand.addStretch()
+        self.settings = QDialog(self)
+        self.settings.resize(420, 300)
+        self.settings.setWindowModality(Qt.WindowModal)
+        self.gear = self.button(brand,self.settings.open)
+        self.gear.setText("⚙")
+        self.gear.setObjectName("gear")
+        self.gear.setFixedSize(40,40)
         layout.addLayout(brand)
-        self.tabs = QTabWidget()
-        layout.addWidget(self.tabs)
         workspace = QWidget()
-        self.tabs.addTab(workspace,"")
+        layout.addWidget(workspace,1)
         work = QVBoxLayout(workspace)
         work.setContentsMargins(14,16,14,14)
         work.setSpacing(14)
@@ -111,16 +118,29 @@ class Window(QMainWindow):
         src.addWidget(self.source)
         self.paper = Paper()
         prev.addWidget(self.paper)
-        settings = QWidget()
-        self.tabs.addTab(settings,"")
-        form = QFormLayout(settings)
-        form.setContentsMargins(22,24,22,22)
+        settings_layout = QVBoxLayout(self.settings)
+        settings_layout.setContentsMargins(22,20,22,14)
+        settings_layout.addStretch()
+        fields = QWidget()
+        form = QFormLayout(fields)
+        form.setHorizontalSpacing(14)
+        form.setVerticalSpacing(12)
+        settings_layout.addWidget(fields,0,Qt.AlignCenter)
+        settings_layout.addStretch()
         self.theme_label,self.language_label = QLabel(),QLabel()
         self.themes,self.languages = QComboBox(),QComboBox()
         self.languages.addItems(["Русский","English"])
         self.languages.setCurrentIndex(int(self.lang=="en"))
         form.addRow(self.theme_label,self.themes)
         form.addRow(self.language_label,self.languages)
+        self.version_label = QLabel()
+        self.contact_label = QLabel()
+        self.contact_label.setOpenExternalLinks(True)
+        self.contact_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        for label in (self.version_label,self.contact_label):
+            label.setObjectName("settingsFooter")
+            label.setAlignment(Qt.AlignCenter)
+            settings_layout.addWidget(label)
         self.translate()
         self.restyle()
         self.refresh()
@@ -144,8 +164,11 @@ class Window(QMainWindow):
         return tr(self.lang,key)
 
     def translate(self):
-        self.tabs.setTabText(0,self.t("editor"))
-        self.tabs.setTabText(1,self.t("settings"))
+        self.settings.setWindowTitle(self.t("settings"))
+        self.gear.setAccessibleName(self.t("settings"))
+        self.gear.setToolTip(self.t("settings"))
+        self.version_label.setText(f"{self.t('version')} {VERSION}")
+        self.contact_label.setText(f'{self.t("bug_contact")} <a href="mailto:{CONTACT}">{CONTACT}</a>')
         for w,key in [(self.preset_label,"preset"),(self.edit,"edit"),(self.copy,"copy"),(self.save,"export"),
                       (self.open,"open"),(self.preview_label,"preview"),(self.theme_label,"theme"),(self.language_label,"language")]:
             w.setText(self.t(key))
@@ -188,6 +211,8 @@ class Window(QMainWindow):
         QApplication.instance().setStyleSheet(f"""
           QWidget {{background:{bg};color:{text};font-family:'Segoe UI';font-size:10pt;}}
           QLabel#brand {{font-size:18pt;font-weight:700;}}
+          QPushButton#gear {{font-family:'Segoe UI Symbol';font-size:18pt;padding:0;}}
+          QLabel#settingsFooter {{font-size:9pt;}}
           QTabWidget::pane {{border:1px solid {line};border-radius:6px;}}
           QTabBar::tab {{padding:7px 16px;color:{text};}}
           QTabBar::tab:selected {{color:{accent};border-bottom:2px solid {accent};}}
@@ -276,6 +301,7 @@ class Window(QMainWindow):
 if __name__=="__main__":
     app=QApplication(sys.argv)
     app.setApplicationName("MDtoDOCX")
+    app.setApplicationVersion(VERSION)
     w=Window()
     w.show()
     sys.exit(app.exec())

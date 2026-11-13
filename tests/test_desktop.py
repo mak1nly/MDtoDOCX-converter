@@ -11,7 +11,7 @@ from PySide6.QtCore import QPoint, Qt
 from PySide6.QtWidgets import QApplication
 from docx import Document
 
-from app import Window
+from app import CONTACT, VERSION, Window
 from mdword.formatting import DEFAULT
 from mdword.preset_dialog import PresetDialog
 
@@ -37,6 +37,23 @@ class Desktop(unittest.TestCase):
             finally:
                 dialog.close()
                 w.close()
+
+    def test_settings_gear(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            window = Window(Path(tmp) / "prefs.json")
+            window.show()
+            try:
+                window.source.setPlainText("# Несохранённый текст")
+                window.gear.click()
+                self.assertTrue(window.settings.isVisible())
+                window.languages.setCurrentIndex(1)
+                self.assertEqual(window.settings.windowTitle(), "Settings")
+                self.assertIn(VERSION, window.version_label.text())
+                self.assertIn("mailto:" + CONTACT, window.contact_label.text())
+                window.settings.reject()
+                self.assertEqual(window.source.toPlainText(), "# Несохранённый текст")
+            finally:
+                window.close()
 
     def test_editor_panel_spacing(self):
         with tempfile.TemporaryDirectory() as tmp:

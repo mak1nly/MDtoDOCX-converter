@@ -4,7 +4,7 @@
 
 ## Русский
 
-Для запуска на Windows x64 откройте **MDtoDOCX.exe** двойным щелчком. Python, Qt и конвертер уже включены в файл. Приложение создаёт DOCX локально и работает без установленного Microsoft Word.
+Для установки на Windows x64 запустите **MDtoDOCX-Setup.exe**, затем откройте MDtoDOCX через меню «Пуск». Для удаления используйте список установленных приложений Windows. Также доступна переносимая версия **MDtoDOCX.exe**. Python, Qt и конвертер уже включены в файл. Приложение создаёт DOCX локально и работает без установленного Microsoft Word.
 
 ### Редактор
 
@@ -14,7 +14,7 @@
 
 «Изменить» открывает настройки выбранного пресета, «+» создаёт новый. Справа от параметров расположен живой образец. Изменения применяются к пресету кнопкой «Сохранить». Настраиваются формат и ориентация листа, четыре поля, шрифт, размер, выравнивание, межстрочный интервал, отступ первой строки и интервалы абзацев. Для каждого из шести уровней заголовков доступны размер, начертание, выравнивание и интервалы. У таблиц можно включать границы и полужирную шапку.
 
-Во вкладке «Настройки» доступны русский и английский языки, светлая, тёмная и системная темы. Пресеты и предпочтения сохраняются в preferences.json в пользовательской папке настроек MDtoDOCX. Редактируемый Markdown хранится в памяти до закрытия окна.
+Шестерёнка в правом верхнем углу открывает настройки. Внизу окна указаны версия и адрес для сообщений об ошибках. Доступны русский и английский языки, светлая, тёмная и системная темы. Пресеты и предпочтения сохраняются в preferences.json в пользовательской папке настроек MDtoDOCX. Редактируемый Markdown хранится в памяти до закрытия окна.
 
 ### Работа с исходным кодом
 
@@ -27,13 +27,13 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-Чтобы проверить изменения, выполните `python -m unittest discover -s tests -v`. Для сборки установите PyInstaller командой `python -m pip install pyinstaller==6.22.3`, затем выполните `.\build.ps1`. Готовый файл появится в `dist/MDtoDOCX.exe`.
+Чтобы проверить изменения, выполните `python -m unittest discover -s tests -v`. Для сборки установите PyInstaller командой `python -m pip install pyinstaller==6.22.3`, затем выполните `.\build.ps1`. Готовый файл появится в `dist/MDtoDOCX.exe`. Для сборки установщика установите Inno Setup 6 и запустите `.\build.ps1 -InstallerCompiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"`, указав путь к своему компилятору.
 
 `app.py` содержит главное окно. В `mdword/` находятся парсер Markdown, настройки пресетов, редактор шаблонов, предпросмотр, переводы и экспорт DOCX. Изображения для окна и исполняемого файла хранятся в `assets/`.
 
 ## English
 
-On 64-bit Windows, double-click **MDtoDOCX.exe** to start. The executable includes Python, Qt and the converter. It creates DOCX files locally and works without Microsoft Word installed.
+On 64-bit Windows, run **MDtoDOCX-Setup.exe** and open MDtoDOCX from the Start menu. Use Windows Installed apps to uninstall. A portable **MDtoDOCX.exe** is also available. The executable includes Python, Qt and the converter. It creates DOCX files locally and works without Microsoft Word installed.
 
 ### Editor
 
@@ -43,7 +43,7 @@ Choose a preset and select **Copy dictionary**. The clipboard will contain the f
 
 Select **Edit** to change the current preset or **+** to create one. The sample to the right updates as you edit. Select **Save** to apply the changes. You can adjust paper size, orientation, all four margins, font, size, alignment, line spacing, first-line indent and paragraph spacing. Each of the six heading levels has its own size, weight, alignment and spacing. Tables support optional borders and a bold header row.
 
-Under **Settings**, choose Russian or English and a light, dark or system theme. Presets and preferences are stored in `preferences.json` in the user's MDtoDOCX settings folder. Markdown in the editor stays in memory until the window closes.
+Click the gear in the upper-right corner to open **Settings**. The version and bug report email appear at the bottom. Choose Russian or English and a light, dark or system theme. Presets and preferences are stored in `preferences.json` in the user's MDtoDOCX settings folder. Markdown in the editor stays in memory until the window closes.
 
 ### Working with the source code
 
@@ -56,6 +56,6 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-To test your changes, run `python -m unittest discover -s tests -v`. To build the executable, install PyInstaller with `python -m pip install pyinstaller==6.22.3`, then run `.\build.ps1`. The resulting file is `dist/MDtoDOCX.exe`.
+To test your changes, run `python -m unittest discover -s tests -v`. To build the executable, install PyInstaller with `python -m pip install pyinstaller==6.22.3`, then run `.\build.ps1`. The resulting file is `dist/MDtoDOCX.exe`. To build the installer, install Inno Setup 6 and run `.\build.ps1 -InstallerCompiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"` with the path to your compiler.
 
 `app.py` contains the main window. The `mdword/` directory contains the Markdown parser, preset settings, template editor, preview, translations and DOCX export. The window and executable icons are in `assets/`.

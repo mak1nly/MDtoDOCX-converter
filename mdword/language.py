@@ -2,6 +2,7 @@ from .formatting import DEFAULT
 from .preview import dictionary, sample
 
 UI = {
+    "version": ("Версия", "Version"), "bug_contact": ("Нашли ошибку? Напишите на", "Found a bug? Email"),
     "copy_selection": ("Копировать выделенное", "Copy selection"),
     "copy_preview": ("Копировать весь текст", "Copy all text"),
     "select_all": ("Выделить всё", "Select all"),
