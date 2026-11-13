@@ -1,0 +1,2 @@
+python-docx==1.2.0
+PySide6-Essentials==6.12.0
